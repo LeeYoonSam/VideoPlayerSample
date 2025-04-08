@@ -1,23 +1,43 @@
 package com.ys.player.sample
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo.*
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 import android.content.res.Configuration
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.media3.common.MediaItem
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import androidx.media3.common.MediaItem
 import com.ys.player.media.Media
 import com.ys.player.media.MediaState
 import com.ys.player.media.ShowBuffering
@@ -59,7 +79,7 @@ fun FullscreenToggle(navController: NavHostController) {
                 title = { Text("Fullscreen Toggle") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     }
                 }
             )
