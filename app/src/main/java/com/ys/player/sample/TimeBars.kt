@@ -18,9 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ys.player.R
-import com.ys.player.media.TimeBar
-import com.ys.player.media.TimeBarProgress
-import com.ys.player.media.TimeBarScrubber
+import com.ys.player.simple.media.TimeBar
+import com.ys.player.simple.media.TimeBarProgress
+import com.ys.player.simple.media.TimeBarScrubber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

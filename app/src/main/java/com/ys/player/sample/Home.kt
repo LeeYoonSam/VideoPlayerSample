@@ -26,7 +26,8 @@ private val Samples = listOf(
     "list" to "Inside List",
     "fullscreen-toggle" to "Fullscreen Toggle",
     "timebars" to "TimeBars",
-//    "exo-player-view" to "Exo PlayerView",
+    "horizontal-pager" to "Horizontal Pager",
+    "exo-player-view" to "Exo PlayerView",
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

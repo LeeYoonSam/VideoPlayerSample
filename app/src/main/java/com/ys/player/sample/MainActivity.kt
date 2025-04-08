@@ -40,6 +40,9 @@ class MainActivity : ComponentActivity() {
                     composable("timebars") {
                         TimeBars(navController)
                     }
+                    composable("horizontal-pager") {
+                        HorizontalScreen(navController)
+                    }
                     composable("exo-player-view") {
                         PlayerViewSample()
                     }

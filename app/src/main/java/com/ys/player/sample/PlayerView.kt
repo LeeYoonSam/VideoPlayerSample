@@ -24,7 +24,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
 import com.ys.player.R
-import com.ys.player.media.SurfaceType
+import com.ys.player.simple.media.SurfaceType
 
 @Composable
 fun PlayerViewSample() {

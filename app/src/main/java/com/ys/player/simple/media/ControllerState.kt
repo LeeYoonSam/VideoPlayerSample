@@ -1,4 +1,4 @@
-package com.ys.player.media
+package com.ys.player.simple.media
 
 import androidx.annotation.OptIn
 import androidx.compose.runtime.*
