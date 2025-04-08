@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ys.player"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -49,6 +49,21 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    implementation(libs.navigation.compose)
+    implementation(libs.accompanist.systemuicontroller)
+
+    // ExoPlayer
+    implementation(libs.media3.common)
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+
+    // Test
+    androidTestImplementation(libs.media3.test.utils)
+    androidTestImplementation(libs.kotlin.test)
+    androidTestImplementation(libs.compose.ui.test)
+    debugImplementation(libs.compose.ui.test.manifest)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
