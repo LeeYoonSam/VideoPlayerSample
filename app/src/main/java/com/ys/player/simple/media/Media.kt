@@ -1,8 +1,6 @@
 package com.ys.player.simple.media
 
 import android.view.SurfaceView
-import android.view.TextureView
-import android.view.View
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -13,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -23,15 +20,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-
-/**
- * The type of surface view used for video playbacks.
- */
-enum class SurfaceType {
-    None,
-    SurfaceView,
-    TextureView;
-}
 
 /**
  * Determines when the buffering indicator is shown.
@@ -58,13 +46,8 @@ enum class ShowBuffering {
 /**
  * Composable component for [Player] media playbacks.
  *
- * @param state The state object to be used to control or observe the [Media] state.
+ * @param state The state object to be used to control or observe the [MediaSimple] state.
  * @param modifier The modifier to apply to this layout.
- * @param surfaceType The type of surface view used for video playbacks.Using [SurfaceType.None] is
- * recommended for audio only applications, since creating the surface can be expensive. Using
- * [SurfaceType.SurfaceView] is recommended for video applications. Note, [SurfaceType.TextureView]
- * can only be used in a hardware accelerated window. When rendered in software, TextureView will
- * draw nothing.
  * @param resizeMode Controls how video and album art is resized.
  * @param showBuffering Determines when the buffering indicator is shown.
  * @param buffering The buffering indicator, typically a circular progress indicator. Default is
@@ -76,13 +59,12 @@ enum class ShowBuffering {
  * @param controllerAutoShow Whether the playback controls are automatically shown when playback
  * starts, pauses, ends, or fails.
  * @param controller The controller. Since a controller is always a subject to be customized,
- * default is null. The [Media] only provides logic for controller visibility controlling.
+ * default is null. The [MediaSimple] only provides logic for controller visibility controlling.
  */
 @Composable
 fun MediaSimple(
     state: MediaState,
     modifier: Modifier = Modifier,
-    surfaceType: SurfaceType = SurfaceType.SurfaceView,
     resizeMode: ResizeMode = ResizeMode.Fit,
     showBuffering: ShowBuffering = ShowBuffering.Never,
     buffering: @Composable (() -> Unit)? = null,
@@ -135,7 +117,6 @@ fun MediaSimple(
         ) {
             VideoSurface(
                 state = state,
-                surfaceType = surfaceType,
                 modifier = Modifier
                     .testTag(TestTag_VideoSurface)
                     .fillMaxSize()
@@ -179,55 +160,29 @@ fun MediaSimple(
 @Composable
 private fun VideoSurface(
     state: MediaState,
-    surfaceType: SurfaceType,
     modifier: Modifier
 ) {
     val context = LocalContext.current
-    key(surfaceType, context) {
-        if (surfaceType != SurfaceType.None) {
-            fun Player.clearVideoView(view: View) {
-                when (surfaceType) {
-                    SurfaceType.None -> throw IllegalStateException()
-                    SurfaceType.SurfaceView -> clearVideoSurfaceView(view as SurfaceView)
-                    SurfaceType.TextureView -> clearVideoTextureView(view as TextureView)
-                }
-            }
+    val videoView = SurfaceView(context)
 
-            fun Player.setVideoView(view: View) {
-                when (surfaceType) {
-                    SurfaceType.None -> throw IllegalStateException()
-                    SurfaceType.SurfaceView -> setVideoSurfaceView(view as SurfaceView)
-                    SurfaceType.TextureView -> setVideoTextureView(view as TextureView)
-                }
-            }
+    AndroidView(
+        factory = { videoView },
+        modifier = modifier,
+    ) {
+        // update player
+        val currentPlayer = state.player
+        val previousPlayer = it.tag as? Player
+        if (previousPlayer === currentPlayer) return@AndroidView
 
-            val videoView = remember {
-                when (surfaceType) {
-                    SurfaceType.None -> throw IllegalStateException()
-                    SurfaceType.SurfaceView -> SurfaceView(context)
-                    SurfaceType.TextureView -> TextureView(context)
-                }
-            }
-            AndroidView(
-                factory = { videoView },
-                modifier = modifier,
-            ) {
-                // update player
-                val currentPlayer = state.player
-                val previousPlayer = it.tag as? Player
-                if (previousPlayer === currentPlayer) return@AndroidView
+        previousPlayer?.clearVideoSurfaceView(it)
 
-                previousPlayer?.clearVideoView(it)
-
-                it.tag = currentPlayer?.apply {
-                    setVideoView(it)
-                }
-            }
-            DisposableEffect(Unit) {
-                onDispose {
-                    (videoView.tag as? Player)?.clearVideoView(videoView)
-                }
-            }
+        it.tag = currentPlayer?.apply {
+            setVideoSurfaceView(it)
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            (videoView.tag as? Player)?.clearVideoSurfaceView(videoView)
         }
     }
 }

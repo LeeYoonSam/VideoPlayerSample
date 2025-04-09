@@ -27,6 +27,7 @@ private val Samples = listOf(
     "fullscreen-toggle" to "Fullscreen Toggle",
     "timebars" to "TimeBars",
     "horizontal-pager" to "Horizontal Pager",
+    "horizontal-pager-simple" to "Horizontal Pager with MediaSimple",
     "exo-player-view" to "Exo PlayerView",
 )
 

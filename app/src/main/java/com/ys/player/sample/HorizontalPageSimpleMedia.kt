@@ -1,10 +1,10 @@
 package com.ys.player.sample
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -44,15 +45,15 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.navigation.NavHostController
 import com.ys.player.R
-import com.ys.player.media.Media
-import com.ys.player.media.ResizeMode
-import com.ys.player.media.ShowBuffering
-import com.ys.player.media.rememberMediaState
+import com.ys.player.simple.media.MediaSimple
+import com.ys.player.simple.media.ResizeMode
+import com.ys.player.simple.media.ShowBuffering
+import com.ys.player.simple.media.rememberMediaState
 import com.ys.player.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HorizontalScreen(navController: NavHostController) {
+fun HorizontalSimpleMediaScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,12 +69,12 @@ fun HorizontalScreen(navController: NavHostController) {
             .fillMaxSize()
             .systemBarsPadding(),
     ) { padding ->
-        HorizontalPageContent2(Modifier.fillMaxSize(), padding)
+        HorizontalPageContent(Modifier.fillMaxSize(), padding)
     }
 }
 
 @Composable
-fun HorizontalPageContent2(
+fun HorizontalPageContent(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues
 ) {
@@ -110,33 +111,42 @@ fun HorizontalPageContent2(
                             prepare()
                         }
                     }
-                    Media(
+                    MediaSimple(
                         state = rememberMediaState(player = player),
                         resizeMode = ResizeMode.Fill,
                         showBuffering = ShowBuffering.Never,
+                        errorMessage = {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = it.message.orEmpty(),
+                                    style = Typography.labelSmall.copy(color = Color.White),
+                                )
+                            }
+                        },
+                        overlay = {
+                            Box(modifier = Modifier.padding(top = 6.dp, start = 6.dp)) {
+                                Row(modifier = Modifier
+                                    .wrapContentSize()
+                                    .background(color = Color(0x99000000), shape = RoundedCornerShape(size = 1000.dp))
+                                    .padding(6.dp)
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(12.dp),
+                                        imageVector = Icons.Outlined.Face,
+                                        tint = Color.White,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = "15,364,346",
+                                        style = Typography.labelSmall.copy(color = Color.White),
+                                    )
+                                }
+                            }
+                        },
                         modifier = Modifier
                             .matchParentSize()
                     )
-                }
-
-                Box(modifier = Modifier.padding(top = 6.dp, start = 6.dp)) {
-                    Row(modifier = Modifier
-                        .wrapContentSize()
-                        .background(color = Color(0x99000000), shape = RoundedCornerShape(size = 1000.dp))
-                        .padding(6.dp)
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(12.dp),
-                            imageVector = Icons.Outlined.Face,
-                            tint = Color.White,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = "15,364,346",
-                            style = Typography.labelSmall.copy(color = Color.White),
-                        )
-                    }
                 }
             }
             Column(modifier = Modifier.padding(horizontal = 4.dp, vertical = 10.dp)) {
@@ -184,6 +194,22 @@ fun HorizontalPageContent2(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PagerItem(
+    showVideo: Boolean,
+    video: @Composable BoxScope.() -> Unit
+) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(237.dp)
+        .clip(RoundedCornerShape(8.dp))
+    ) {
+        if (showVideo) {
+            video()
         }
     }
 }

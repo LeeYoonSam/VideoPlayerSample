@@ -43,6 +43,9 @@ class MainActivity : ComponentActivity() {
                     composable("horizontal-pager") {
                         HorizontalScreen(navController)
                     }
+                    composable("horizontal-pager-simple") {
+                        HorizontalSimpleMediaScreen(navController)
+                    }
                     composable("exo-player-view") {
                         PlayerViewSample()
                     }
