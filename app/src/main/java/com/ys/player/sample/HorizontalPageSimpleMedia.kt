@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Face
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -79,10 +81,7 @@ fun HorizontalPageContent(
     contentPadding: PaddingValues
 ) {
     val mediaItems = remember { videoUrls.map { MediaItem.Builder().setMediaId(it).setUri(it).build() } }
-    val player by rememberManagedExoPlayer()
-
     val pagerState = rememberPagerState(pageCount = { mediaItems.size })
-    val currentPage = pagerState.currentPage
 
     HorizontalPager(
         state = pagerState,
@@ -91,62 +90,77 @@ fun HorizontalPageContent(
         contentPadding = PaddingValues(horizontal = 16.dp),
         pageSpacing = 12.dp
     ) { page ->
+
+        val player by rememberManagedExoPlayer()
+        val currentPage = pagerState.currentPage
+
         val mediaItem = mediaItems[page]
         val isCurrentlyVisible = page == currentPage && !pagerState.isScrollInProgress
 
-        Column(
-            modifier = Modifier
-                .width(156.dp)
-                .height(361.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
-        ) {
-            Box {
-                PagerItem(
-                    showVideo = isCurrentlyVisible
-                ) {
-                    LaunchedEffect(mediaItem, player) {
-                        player?.run {
-                            setMediaItem(mediaItem)
-                            prepare()
-                        }
+        PagerCardItem(isCurrentlyVisible) {
+            LaunchedEffect(mediaItem, player) {
+                player?.run {
+                    setMediaItem(mediaItem)
+                    prepare()
+                }
+            }
+            MediaSimple(
+                state = rememberMediaState(player = player),
+                resizeMode = ResizeMode.Fill,
+                showBuffering = ShowBuffering.Never,
+                errorMessage = {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = it.message.orEmpty(),
+                            style = Typography.labelSmall.copy(color = Color.White),
+                        )
                     }
-                    MediaSimple(
-                        state = rememberMediaState(player = player),
-                        resizeMode = ResizeMode.Fill,
-                        showBuffering = ShowBuffering.Never,
-                        errorMessage = {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text(
-                                    text = it.message.orEmpty(),
-                                    style = Typography.labelSmall.copy(color = Color.White),
-                                )
-                            }
-                        },
-                        overlay = {
-                            Box(modifier = Modifier.padding(top = 6.dp, start = 6.dp)) {
-                                Row(modifier = Modifier
-                                    .wrapContentSize()
-                                    .background(color = Color(0x99000000), shape = RoundedCornerShape(size = 1000.dp))
-                                    .padding(6.dp)
-                                ) {
-                                    Icon(
-                                        modifier = Modifier.size(12.dp),
-                                        imageVector = Icons.Outlined.Face,
-                                        tint = Color.White,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = Modifier.width(2.dp))
-                                    Text(
-                                        text = "15,364,346",
-                                        style = Typography.labelSmall.copy(color = Color.White),
-                                    )
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .matchParentSize()
-                    )
+                },
+//                overlay = {
+//                    Box(modifier = Modifier.padding(top = 6.dp, start = 6.dp)) {
+//                        Row(modifier = Modifier
+//                            .wrapContentSize()
+//                            .background(color = Color(0x99000000), shape = RoundedCornerShape(size = 1000.dp))
+//                            .padding(6.dp)
+//                        ) {
+//                            Icon(
+//                                modifier = Modifier.size(12.dp),
+//                                imageVector = Icons.Outlined.Face,
+//                                tint = Color.White,
+//                                contentDescription = null
+//                            )
+//                            Spacer(modifier = Modifier.width(2.dp))
+//                            Text(
+//                                text = "15,364,346",
+//                                style = Typography.labelSmall.copy(color = Color.White),
+//                            )
+//                        }
+//                    }
+//                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(237.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+        }
+    }
+}
+
+@Composable
+fun PagerCardItem(
+    showVideo: Boolean,
+    video: @Composable BoxScope.() -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .width(156.dp)
+            .height(361.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column {
+            Box {
+                if (showVideo) {
+                    video()
                 }
             }
             Column(modifier = Modifier.padding(horizontal = 4.dp, vertical = 10.dp)) {
@@ -194,22 +208,6 @@ fun HorizontalPageContent(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun PagerItem(
-    showVideo: Boolean,
-    video: @Composable BoxScope.() -> Unit
-) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(237.dp)
-        .clip(RoundedCornerShape(8.dp))
-    ) {
-        if (showVideo) {
-            video()
         }
     }
 }
