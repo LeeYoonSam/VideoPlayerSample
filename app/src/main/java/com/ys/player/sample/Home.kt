@@ -29,6 +29,7 @@ private val Samples = listOf(
     "horizontal-pager" to "Horizontal Pager",
     "horizontal-pager-simple" to "Horizontal Pager with MediaSimple",
     "exo-player-view" to "Exo PlayerView",
+    "video-player" to "Video Player",
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

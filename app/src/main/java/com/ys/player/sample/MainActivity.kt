@@ -49,6 +49,9 @@ class MainActivity : ComponentActivity() {
                     composable("exo-player-view") {
                         PlayerViewSample()
                     }
+                    composable("video-player") {
+                        VideoPlayerScreen(navController)
+                    }
                 }
             }
         }

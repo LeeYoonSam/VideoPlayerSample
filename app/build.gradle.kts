@@ -59,6 +59,11 @@ dependencies {
     implementation(libs.media3.exoplayer.hls)
     implementation(libs.media3.ui)
 
+    // Coil
+    implementation(libs.coil)
+    implementation(libs.coil.network.okhttp)
+//    implementation(libs.coil.compose)
+
     // Test
     androidTestImplementation(libs.media3.test.utils)
     androidTestImplementation(libs.kotlin.test)
